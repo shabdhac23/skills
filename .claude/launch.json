@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Daily Digest Generator",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "digest_orchestrator/main.py"
+      ],
+      "port": null,
+      "cwd": "/Users/shabdha/daily-digest-assistant"
+    }
+  ]
+}
