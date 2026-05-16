@@ -28,11 +28,19 @@ def prioritize_emails_and_calendar():
 
 You have access to Gmail and Calendar MCPs. Follow these steps:
 
-1. **Fetch Unread Emails**
-   - Use Gmail MCP to list unread emails from last 24 hours
+1. **Fetch Unread Emails (Last 24 Hours)**
+   - Use Gmail MCP to list unread emails
    - For each email, note: sender, subject, snippet, timestamp
 
-2. **Score Each Email for Priority**
+2. **Fetch Important Inbox Emails (No Recent Response)**
+   - Use Gmail MCP to list all emails with the IMPORTANT label
+   - For each email in IMPORTANT inbox:
+     * Get the full thread/conversation
+     * Check if the last message in the thread is from the sender (not you)
+     * If last message is from them (no response from you), include in "needs_action"
+     * Note: sender, subject, date received, last message date
+
+3. **Score Each Email for Priority**
    Assign a priority score (0-10) based on:
    - Contains questions or requests? (+3)
    - Sender is known important (CEO, manager, key client)? (+2)
@@ -41,29 +49,38 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
    - Has attachments? (+1)
    - Requires specific action/decision? (+2)
 
-3. **Fetch Today's Calendar Events**
+4. **Fetch Today's Calendar Events**
    - Use Calendar MCP to get all events for today
    - Note: time, title, duration, description
    - Identify back-to-back meetings or time blocks
 
-4. **Identify Calendar Constraints**
+5. **Identify Calendar Constraints**
    - Time blocks that limit deep work
    - Upcoming deadlines mentioned in calendar
    - Travel time requirements
 
-5. **Return Structured Data**
+6. **Return Structured Data**
 
    Format as JSON:
    ```json
    {
      "timestamp": "ISO 8601",
-     "emails": [
+     "needs_action": [
        {
-         "priority_score": 9,
          "sender": "alice@company.com",
          "subject": "Q2 Planning - Need Your Input",
-         "key_signals": ["question", "urgent", "decision_needed"],
-         "action_required": "Reply with timeline",
+         "last_message_date": "2026-05-16T14:30:00Z",
+         "days_waiting": 2,
+         "snippet": "..."
+       }
+     ],
+     "unread_emails": [
+       {
+         "priority_score": 9,
+         "sender": "bob@company.com",
+         "subject": "Meeting Tomorrow",
+         "key_signals": ["question", "urgent"],
+         "action_required": "Confirm attendance",
          "snippet": "..."
        }
      ],
@@ -79,18 +96,18 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
        "most_urgent_email": "alice@company.com - Q2 Planning",
        "time_constraints": "Back-to-back meetings 10am-12pm, 2pm-4pm",
        "deep_work_windows": "Before 10am, 12pm-2pm (lunch), after 4pm",
-       "key_observations": "Multiple emails awaiting response, tight calendar"
+       "key_observations": "2 important emails awaiting your response, tight morning schedule"
      }
    }
    ```
 
-6. **Be Thorough**
-   - Check all unread emails (don't limit to first 5)
+7. **Be Thorough**
+   - Check ALL unread emails and IMPORTANT inbox emails
    - Accurately score based on content signals
-   - Note any time-sensitive items
-   - Identify dependencies (emails waiting on other emails)
+   - For needs_action: note how long each has been waiting for response
+   - Identify dependencies and time-sensitive items
 
-Return the complete JSON structure with all emails analyzed and calendar mapped."""
+Return the complete JSON structure with needs_action section populated with important emails awaiting your response."""
 
     message = client.messages.create(
         model="claude-opus-4-7",
