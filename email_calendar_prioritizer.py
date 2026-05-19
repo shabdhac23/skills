@@ -34,6 +34,7 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
    - EXCLUDE (filter out from display):
      * Marketing/newsletter senders
      * Google Flights alerts and similar travel automation
+     * Shipping notifications ("out for delivery", "package arrived", "tracking", etc.)
      * Automated alerts (except payment/billing)
 
 2. **Fetch Important Emails (Gmail's Automatic Detection + Exclusions)**
@@ -57,19 +58,20 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
    - Has attachments? (+1)
    - Requires specific action/decision? (+2)
 
-4. **Fetch Today's Calendar Events**
+4. **Fetch Today's and Tomorrow's Calendar Events**
    - Use Calendar MCP to get all events for today
-   - Note: time, title, duration, description
-   - Identify back-to-back meetings or time blocks
+   - Use Calendar MCP to get all events for tomorrow
+   - For each event note: time, title, duration, description
+   - For tomorrow's events, identify any prep needed (from description or title)
 
-5. **Identify Calendar Constraints**
-   - Time blocks that limit deep work
-   - Upcoming deadlines mentioned in calendar
-   - Travel time requirements
+5. **Identify Prep Requirements**
+   - Look at tomorrow's events for anything requiring preparation
+   - Check descriptions for notes about prep, materials, or pre-work
+   - Highlight any events that might need advance action
 
 6. **Return Structured Data**
 
-   Format as JSON:
+   Format as JSON with today's and tomorrow's calendar:
    ```json
    {
      "timestamp": "ISO 8601",
@@ -92,19 +94,25 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
          "snippet": "..."
        }
      ],
-     "calendar": [
+     "today_calendar": [
        {
          "time": "10:00-11:00 AM",
          "title": "Team Standup",
+         "duration_minutes": 60
+       }
+     ],
+     "tomorrow_calendar": [
+       {
+         "time": "2:00-3:00 PM",
+         "title": "Client Presentation",
          "duration_minutes": 60,
-         "notes": "Weekly sync"
+         "prep_needed": "Prepare slides on Q2 metrics"
        }
      ],
      "analysis": {
        "most_urgent_email": "alice@company.com - Q2 Planning",
-       "time_constraints": "Back-to-back meetings 10am-12pm, 2pm-4pm",
-       "deep_work_windows": "Before 10am, 12pm-2pm (lunch), after 4pm",
-       "key_observations": "2 important emails awaiting your response, tight morning schedule"
+       "tomorrow_prep": "Client presentation - slides needed",
+       "key_observations": "2 important emails awaiting response, 1 prep item for tomorrow"
      }
    }
    ```
@@ -112,8 +120,9 @@ You have access to Gmail and Calendar MCPs. Follow these steps:
 7. **Gmail Query Tips**
    - Use `is:important` to get emails Gmail has flagged as important
    - Use `-from:google-flights-noreply@google.com` to exclude Google Flights
-   - Use query: `is:important -from:google-flights -from:noreply@flights.google.com -(unsubscribe OR marketing OR newsletter OR promotional)`
-   - For unread: `is:unread -(unsubscribe OR marketing OR newsletter OR promotional OR google-flights)`
+   - Exclude shipping: `-(out for delivery OR package arrived OR tracking number OR shipment)`
+   - Use query: `is:important -from:google-flights -from:noreply@flights.google.com -(unsubscribe OR marketing OR newsletter OR promotional OR "out for delivery" OR "package arrived" OR tracking)`
+   - For unread: `is:unread -(unsubscribe OR marketing OR newsletter OR promotional OR google-flights OR "out for delivery")`
    - INCLUDE billing/payment emails even if automated
 
 8. **Be Thorough**
