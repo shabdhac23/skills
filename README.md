@@ -130,20 +130,6 @@ Instead of orchestrating tools manually, Claude independently decides which tool
 ### ✅ Graceful Degradation
 If any source fails, the digest continues with available data. Errors are logged but non-fatal.
 
-## Interview Appeal
-
-This project demonstrates:
-
-| Skill | Evidence |
-|-------|----------|
-| **AI Integration** | Autonomous tool use with Claude API |
-| **Pragmatism** | Using built-in MCPs instead of building from scratch |
-| **Tool Composition** | Combining 3 MCPs + Claude for complex task |
-| **Creative Problem-Solving** | AppleScript integration for Notes (no API) |
-| **Software Engineering** | Error handling, logging, config management |
-| **Full-Stack Thinking** | Data collection → AI reasoning → delivery |
-| **Documentation** | Architecture docs explaining design decisions |
-
 ## Real-World Use
 
 This actually works as a daily assistant:
